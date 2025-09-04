@@ -22,3 +22,18 @@ class HTMLNode:
         kids = len(self.children) if self.children else 0
         val = self.value if self.value is None or len(str(self.value)) <= 30 else str(self.value)[:27] + "..."
         return f"HTMLNode(tag={self.tag!r}, value={val!r}, children={kids}, props={self.props!r})"
+
+class LeafNode(HTMLNode):
+    def __init__(self, tag, value, props=None):
+        if value is None:
+            raise ValueError("LeafNode requires a non-None value")
+        super().__init__(tag=tag, value=value, children=None, props=props)
+
+    def to_html(self):
+        if self.value is None:
+            raise ValueError("LeafNode must have a value")
+        if self.tag is None:
+            return self.value
+        return f"<{self.tag}{self.props_to_html()}>{self.value}</{self.tag}>"
+
+    
